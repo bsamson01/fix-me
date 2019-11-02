@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Broker {
 
-    public static void main(String args[]) throws IOException{
+    public static void main(String args[]) throws IOException {
 
         InetAddress address = InetAddress.getLocalHost();
         Socket s1 = null;

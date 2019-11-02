@@ -9,11 +9,10 @@ import java.net.Socket;
 
 public class Market {
 
-    public static void main(String args[]) throws IOException{
+    public static void main(String args[]) throws IOException {
 
         InetAddress address = InetAddress.getLocalHost();
         Socket s1 = null;
-        String line = null;
         BufferedReader br = null;
         BufferedReader in = null;
         PrintWriter out = null;
@@ -30,15 +29,17 @@ public class Market {
         }
 
         System.out.println("Market Address : " + address);
-        String response = null;
         try {
-            line = br.readLine(); 
-            while (line.compareToIgnoreCase("quit") != 0) {
-                out.println(line);
-                out.flush();
-                response = in.readLine();
-                System.out.println("Server Response : " + response);
-                line = br.readLine();
+            while (true) {
+                String request = in.readLine();
+                if (request != null) {
+                    if (request.compareToIgnoreCase("Quit"))
+                        break ;
+                    System.out.println("Server Request : " + request);
+                    out.println("Request processed");
+                    out.flush();
+                    request = null;
+                }
             }
         }
 
@@ -46,7 +47,7 @@ public class Market {
             e.printStackTrace();
             System.out.println("Socket read Error");
         }
-        finally{
+        finally {
             in.close();out.close();br.close();s1.close();
             System.out.println("Connection Closed");
         }

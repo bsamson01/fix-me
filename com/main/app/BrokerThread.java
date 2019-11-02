@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class ServerThread extends Thread {
+class BrokerThread extends Thread {
 
     String line = null;
     BufferedReader  is = null;
@@ -15,9 +15,11 @@ class ServerThread extends Thread {
     Socket socket = null;
     Connection cn = null;
 
-    public ServerThread(Socket s, Connection connection) {
+    public BrokerThread(Socket s, Connection connection) {
+        super(" " + connection.getId());
         this.socket = s;
         this.cn = connection;
+        System.out.println(this.getName());
     }
 
     public void run() {
@@ -44,7 +46,7 @@ class ServerThread extends Thread {
             System.out.println("IO Error/ Client " + line + " terminated abruptly");
         }
         catch (NullPointerException e) {
-            line=this.getName();
+            line = this.getName();
             System.out.println("Client " + line + " Closed");
         }
 

@@ -7,10 +7,11 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.*;
+import java.util.*;
 
 
 public class Router {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException{
 
         Socket brSocket = null;
         Socket mkSocket = null;
@@ -35,26 +36,26 @@ public class Router {
         int i = 0;
         int j = 0;
         while(true) {
-            try {
+            if ((brSocket = brokerSocket.accept()) != null) {
+                // brSocket = brokerSocket.accept();
                 i++;
-                brSocket = brokerSocket.accept();
                 Connection cn = new Connection(10000 + i);
                 System.out.println("Connection Established by Broker(#" + cn.getId() + ")" );
-                ServerThread st = new ServerThread(brSocket, cn);
+                BrokerThread st = new BrokerThread(brSocket, cn);
                 st.start();
             }
-            catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Connection Error");
-                break;
-            }
+            // catch(Exception e) {
+            //     e.printStackTrace();
+            //     System.out.println("Connection Error");
+            //     break;
+            // }
 
             try {
-                j++;
                 mkSocket = marketSocket.accept();
-                Connection cn = new Connection(10000 + j);
+                j++;
+                Connection cn = new Connection(20000 + j);
                 System.out.println("Connection Established by Market(#" + cn.getId() + ")" );
-                ServerThread st = new ServerThread(mkSocket, cn);
+                MarketThread st = new MarketThread(mkSocket, cn);
                 st.start();
             }
             catch(Exception e) {
@@ -74,6 +75,17 @@ public class Router {
         }
         catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public Set<Thread> getThreads() {
+        try {
+            Set<Thread> threads = Thread.getAllStackTraces().keySet();
+            return threads;
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
